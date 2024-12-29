@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Upload Interface</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script> <!-- New Google Identity Services Library -->
+</head>
+<body>
+
+    <div class="container">
+        <h1>Upload Your Files to Google Drive</h1>
+
+        <!-- Sign-in button -->
+        <div id="g_id_onload"
+            data-client_id="984320726352-ujftcdtj90svqoaud5g6d31lee5jb25k.apps.googleusercontent.com"
+            data-login_uri="http://localhost:8080"
+            data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" data-type="standard"></div>
+
+        <!-- File selection button -->
+        <input type="file" id="fileInput" multiple>
+        
+        <!-- Display selected file names -->
+        <div id="fileList">
+            <!-- File names will appear here -->
+        </div>
+
+        <!-- Upload button -->
+        <button id="uploadBtn" disabled>Upload Files</button>
+    </div>
+
+    <script src="script.js"></script> <!-- Your custom JS file -->
+    
+</body>
+</html>
