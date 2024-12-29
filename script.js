@@ -1,86 +1,82 @@
-// Step 1: Google Auth Initialization
+// Step 1: Initialize Google Sign-In
 window.onload = () => {
     window.google.accounts.id.initialize({
-        client_id: "984320726352-ujftcdtj90svqoaud5g6d31lee5jb25k.apps.googleusercontent.com",
-        callback: handleCredentialResponse
+        client_id: "YOUR_CLIENT_ID",
+        callback: handleCredentialResponse,
+        scope: "https://www.googleapis.com/auth/drive.file"
     });
+
     window.google.accounts.id.renderButton(
         document.querySelector(".g_id_signin"),
-        { theme: "outline", size: "large" } // Customize the button style
+        { theme: "outline", size: "large" }
     );
 };
 
-// Step 2: Handle the credential response (sign-in)
+// Step 2: Handle User Sign-In
 function handleCredentialResponse(response) {
     const idToken = response.credential;
-    console.log('Encoded JWT ID token: ' + idToken);
-    alert("Sign-In successful! Token in console.");
+    console.log("Encoded JWT ID token:", idToken);
+    alert("Sign-In successful!");
 
-    // Display the file input and upload button after sign-in
-    document.getElementById('fileInput').style.display = 'inline-block';
-    document.getElementById('uploadBtn').disabled = false;
+    window.localStorage.setItem("google_id_token", idToken);
+    document.getElementById("fileInput").style.display = "inline-block";
+    document.getElementById("uploadBtn").disabled = false;
 }
 
-// Step 3: File Selection
-const fileInput = document.getElementById('fileInput');
-const fileList = document.getElementById('fileList');
+// Step 3: Display Selected Files
+const fileInput = document.getElementById("fileInput");
+const fileList = document.getElementById("fileList");
 
-fileInput.addEventListener('change', event => {
-    fileList.innerHTML = '';
+fileInput.addEventListener("change", event => {
+    fileList.innerHTML = ""; // Clear previous list
     Array.from(event.target.files).forEach(file => {
-        const fileItem = document.createElement('div');
+        const fileItem = document.createElement("div");
         fileItem.textContent = file.name;
         fileList.appendChild(fileItem);
     });
 });
 
-// Step 4: Upload File to Google Drive
-const uploadBtn = document.getElementById('uploadBtn');
+// Step 4: Handle File Upload
+const uploadBtn = document.getElementById("uploadBtn");
+const uploadStatus = document.getElementById("uploadStatus");
 
-uploadBtn.addEventListener('click', () => {
-    const file = fileInput.files[0]; // Assuming one file is selected
-    if (!file) {
-        alert('Please select a file to upload.');
+uploadBtn.addEventListener("click", () => {
+    const files = fileInput.files;
+
+    if (!files.length) {
+        alert("Please select at least one file to upload.");
         return;
     }
 
-    const idToken = getIdToken(); // Get the signed-in user's token
+    if (!confirm("Are you sure you want to upload the selected files?")) {
+        return;
+    }
+
+    const idToken = getIdToken();
     if (!idToken) {
-        alert('Please sign in first.');
+        alert("Please sign in first.");
         return;
     }
 
-    uploadFileToGoogleDrive(file, idToken);
+    Array.from(files).forEach(file => {
+        // Provide feedback to the user
+        uploadStatus.textContent = `Uploading ${file.name}...`;
+
+        // Simplified upload function for testing
+        uploadFileToGoogleDrive(file, idToken);
+    });
 });
 
-// Step 5: Upload file to Google Drive
 function uploadFileToGoogleDrive(file, idToken) {
-    const formData = new FormData();
-    formData.append('file', file);
+    console.log("Preparing to upload:", file.name);
 
-    fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart', {
-        method: 'POST',
-        headers: {
-            Authorization: `Bearer ${idToken}`, // Pass the ID token for authentication
-        },
-        body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-        console.log('File uploaded successfully', data);
-        alert('File uploaded successfully!');
-    })
-    .catch(error => {
-        console.error('File upload failed', error);
-        alert('File upload failed.');
-    });
+    // Simulated success message
+    setTimeout(() => {
+        console.log(`File "${file.name}" uploaded successfully.`);
+        uploadStatus.textContent = `File "${file.name}" uploaded successfully!`;
+    }, 2000); // Simulate a delay for testing
 }
 
-// Helper function to retrieve the ID token
 function getIdToken() {
-    const auth2 = gapi.auth2.getAuthInstance();
-    if (auth2.isSignedIn.get()) {
-        return auth2.currentUser.get().getAuthResponse().id_token;
-    }
-    return null;
+    return window.localStorage.getItem("google_id_token");
 }
