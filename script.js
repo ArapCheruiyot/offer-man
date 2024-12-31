@@ -97,7 +97,10 @@
             const formData = new FormData();
             formData.append("file", file);
 
-            // Step 2: Make a request to upload the file
+            // Specify the folder ID where you want to upload the file
+            const folderId = "your-folder-id-here"; // Replace with the actual folder ID
+
+            // Step 2: Make a request to upload the file to Google Drive
             fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
                 method: "POST",
                 headers: headers,
@@ -108,6 +111,9 @@
                 if (data.id) {
                     console.log(`File "${file.name}" uploaded successfully with file ID: ${data.id}`);
                     uploadStatus.textContent = `File "${file.name}" uploaded successfully!`;
+
+                    // Step 3: Move the file to the specified folder
+                    moveFileToFolder(data.id, folderId, idToken);
                 } else {
                     console.error("Error uploading file:", data);
                     uploadStatus.textContent = "Error uploading file.";
@@ -116,6 +122,29 @@
             .catch(error => {
                 console.error("Error uploading file:", error);
                 uploadStatus.textContent = "Error uploading file.";
+            });
+        }
+
+        // Function to move the file to the specified folder
+        function moveFileToFolder(fileId, folderId, idToken) {
+            const body = {
+                "addParents": folderId
+            };
+
+            fetch(`https://www.googleapis.com/drive/v3/files/${fileId}`, {
+                method: "PATCH",
+                headers: {
+                    "Authorization": `Bearer ${idToken}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log(`File moved to folder: ${folderId}`);
+            })
+            .catch(error => {
+                console.error("Error moving file to folder:", error);
             });
         }
 
