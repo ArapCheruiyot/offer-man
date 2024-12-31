@@ -152,32 +152,6 @@
         function getIdToken() {
             return window.localStorage.getItem("google_id_token");
         }
-fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
-    method: "POST",
-    headers: headers,
-    body: formData
-})
-.then(response => {
-    console.log("Upload Response:", response);
-    return response.json();  // Parse the JSON response
-})
-.then(data => {
-    if (data.id) {
-        console.log(`File "${file.name}" uploaded successfully with file ID: ${data.id}`);
-        uploadStatus.textContent = `File "${file.name}" uploaded successfully!`;
-
-        // Move file after upload
-        moveFileToFolder(data.id, folderId, idToken);
-    } else {
-        console.error("Error uploading file:", data);
-        uploadStatus.textContent = "Error uploading file.";
-    }
-})
-.catch(error => {
-    console.error("Error uploading file:", error);
-    uploadStatus.textContent = "Error uploading file.";
-});
-
     </script>
 </body>
 </html>
