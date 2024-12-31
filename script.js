@@ -152,6 +152,15 @@
         function getIdToken() {
             return window.localStorage.getItem("google_id_token");
         }
+
+        // Add this code for debugging purposes to clear any stored token in case of issues
+        function clearToken() {
+            window.localStorage.removeItem("google_id_token");
+            console.log("Token cleared from localStorage.");
+        }
+
+        // Uncomment this line to clear the token when needed
+        // clearToken();
     </script>
 </body>
 </html>
