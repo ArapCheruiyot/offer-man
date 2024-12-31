@@ -98,7 +98,7 @@
             formData.append("file", file);
 
             // Specify the folder ID where you want to upload the file
-            const folderId = "your-folder-id-here"; // Replace with the actual folder ID
+            const folderId = "1K7nB0DnFsAEhXAMa5_I8QKBFfGkFZRUa"; // Replace with the actual folder ID
 
             // Step 2: Make a request to upload the file to Google Drive
             fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart", {
