@@ -1,7 +1,7 @@
 // Step 1: Initialize Google Sign-In
 window.onload = () => {
     window.google.accounts.id.initialize({
-        client_id: "YOUR_CLIENT_ID",
+        client_id: "958416089916-1embl17stmkectofeqb74c54ccs38rb5.apps.googleusercontent.com",
         callback: handleCredentialResponse,
         scope: "https://www.googleapis.com/auth/drive.file"
     });
